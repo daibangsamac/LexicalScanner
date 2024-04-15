@@ -9,9 +9,10 @@ import java.util.Scanner;
 public class Main {
 
     private static final int[][] map = new int[60][30]; // map[state][content]
-    private static int tableContentCounter = 0;
-    private static final String[] tableContent = new String[30];
-    private static final String[] endState = new String[60];
+    private static int tableContentCounter = 0; // Use to count how many content in the table
+    private static final String[] tableContent = new String[30];    // Use to store table's content in String
+                                                                    // as I use ID as int for an easier approach
+    private static final String[] endState = new String[60];        // Store all End_State in String
 
     private static final ArrayList<Character> List_CHARACTER = new ArrayList<>();
     private static final ArrayList<Character> List_DIGIT = new ArrayList<>();
@@ -23,6 +24,8 @@ public class Main {
     private static final ArrayList<String> List_KEYWORD = new ArrayList<>();
     private static final ArrayList<String> List_TOKENACCEPTABLE = new ArrayList<>();
     private static final ArrayList<String> List_INPUT = new ArrayList<>();
+
+    // Initialize some customized data such as the token i want to display and file input name
     private static void initialized() {
         List_ESCAPE.add('\b');
         List_ESCAPE.add('\f');
@@ -40,6 +43,7 @@ public class Main {
         List_BLANK.add('\b');
         List_BLANK.add('\r');
 
+        // This is all the tokens i want to display
         List_TOKENACCEPTABLE.add("IDENTIFIER");
         List_TOKENACCEPTABLE.add("KEYWORD");
         List_TOKENACCEPTABLE.add("FLOAT_LITERAL");
@@ -49,33 +53,41 @@ public class Main {
         List_TOKENACCEPTABLE.add("SEPARATOR");
         List_TOKENACCEPTABLE.add("ENDOFFILE");
 
+        // This is the file input
         List_INPUT.add("example_fib");
         List_INPUT.add("example_gcd");
     }
+
+
+    // This will handle all the automated data
     public static void getAutomatonData(String fileName) {
         File file = new File(fileName);
         try {
             Scanner myReader = new Scanner(file);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
+                // Get all the CHARACTER in ASCII used in a VC program
                 if (Objects.equals(data, "CHARACTER")) {
                     String temp = myReader.nextLine();
                         for (int i = 0; i < temp.length(); i++) {
                             List_CHARACTER.add(temp.charAt(i));
                         }
                 }
+                // Same as the digit
                 if (data .equals("DIGIT")) {
                     String temp = myReader.nextLine();
                     for (int i = 0; i < temp.length(); i++) {
                         List_DIGIT.add(temp.charAt(i));
                     }
                 }
+                // Get all accepted separator
                 if (data.equals("SEPARATOR")) {
                     String temp = myReader.nextLine();
                     for (int i = 0; i < temp.length(); i++) {
                         List_SEPARATOR.add(temp.charAt(i));
                     }
                 }
+                // Store all ENDING_STATE in both int and string
                 if (data.equals("ENDING_STATE")) {
                     while (myReader.hasNextLine()) {
                         int state;
@@ -89,6 +101,7 @@ public class Main {
                         endState[List_ENDSTATE.indexOf(state)] = type;
                     }
                 }
+                // Store the mapping state
                 if (data.equals("TABLE")) {
                     String contentRow = myReader.nextLine();
                     int previous_blank;
@@ -117,6 +130,7 @@ public class Main {
                         }
                     }
                 }
+                // Get the Keyword which are string but can't be treated as identifier
                 if (data.equals("KEYWORD")) {
                     String temp = myReader.nextLine();
                     int previous_blank;
@@ -144,6 +158,9 @@ public class Main {
         }
     }
 
+
+    // Return the content for each char as int
+    // by looking up for them in the generated ArrayLists above
     private static int getContent(char c) {
         if (c =='\n')
             for (int i=1;i<=tableContentCounter;i++)
@@ -176,13 +193,23 @@ public class Main {
                 }
         return -1;
     }
+
+    // Parse down file into tokens including Whitespace, tabs or comment
     public static void analyseFile(String fileName) {
+        // Clear tokens before parse down a new file input
         List_Token.clear();
         int currentState = 0;
         int line = 1;
         int length = 1;
         int end = 1;
         File file = new File("Input/"+fileName+".vc");
+
+        // Run through the file 1 by 1 char
+        // if getContent() of that char is not -1
+        // then the state will go to map[currentState][getContent(c)]
+        // if the state is an END it will take down a token
+        // It is even count the length, line and end of the token for position
+        // After running through the file, add a token with the type ENDOFFILE
         try {
             InputStream input = new FileInputStream(file);
             int ch;
@@ -218,12 +245,14 @@ public class Main {
     }
 
 
+    // This is for test only
     public static void testAutomatonDataRead() {
         System.out.println("table content counter: " + tableContentCounter);
         for (int i=1;i<=tableContentCounter;i++) System.out.println(tableContent[i]);
         for (Integer integer : List_ENDSTATE) System.out.println(integer);
     }
 
+    // This is for test only
     public static void testFileAnalyse() {
         System.out.println("token counter: " + List_Token.size());
         int n=0;
@@ -234,6 +263,9 @@ public class Main {
         System.out.println(n);
     }
 
+    // This will make 2 output file in Output folder
+    // 1 .vctok contain all the useful tokens
+    // 2.verbose.vctok contain all the useful tokens with Type, Spelling, Position inside the program
     public static void makeOutput(String filename) {
         String filename1 = "Output/" + filename + ".vctok";
         String filename2 = "Output/" + filename + ".verbose.vctok";
@@ -286,6 +318,8 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    // This will run the main activity, analyse all input and parse them down to tokens
     public static void mainActivity() {
         for (String string:List_INPUT) {
             analyseFile(string);
