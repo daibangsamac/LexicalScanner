@@ -1,3 +1,4 @@
+======= The VC compiler =======
 Kind = KEYWORD, Spelling = "int", position = 1(1)..1(3)
 Kind = IDENTIFIER, Spelling = "i", position = 1(5)..1(5)
 Kind = SEPARATOR, Spelling = ";", position = 1(6)..1(6)

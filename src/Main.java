@@ -2,6 +2,7 @@
 import java.io.*;
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -21,6 +22,7 @@ public class Main {
     private static final ArrayList<Character> List_BLANK = new ArrayList<>();
     private static final ArrayList<String> List_KEYWORD = new ArrayList<>();
     private static final ArrayList<String> List_TOKENACCEPTABLE = new ArrayList<>();
+    private static final ArrayList<String> List_INPUT = new ArrayList<>();
     private static void initialized() {
         List_ESCAPE.add('\b');
         List_ESCAPE.add('\f');
@@ -46,6 +48,9 @@ public class Main {
         List_TOKENACCEPTABLE.add("STRING_LITERAL");
         List_TOKENACCEPTABLE.add("SEPARATOR");
         List_TOKENACCEPTABLE.add("ENDOFFILE");
+
+        List_INPUT.add("example_fib");
+        List_INPUT.add("example_gcd");
     }
     public static void getAutomatonData(String fileName) {
         File file = new File(fileName);
@@ -177,7 +182,7 @@ public class Main {
         int line = 1;
         int length = 1;
         int end = 1;
-        File file = new File(fileName);
+        File file = new File("Input/"+fileName+".vc");
         try {
             InputStream input = new FileInputStream(file);
             int ch;
@@ -230,8 +235,8 @@ public class Main {
     }
 
     public static void makeOutput(String filename) {
-        String filename1 = filename + ".vctok";
-        String filename2 = filename + ".verbose.vctok";
+        String filename1 = "Output/" + filename + ".vctok";
+        String filename2 = "Output/" + filename + ".verbose.vctok";
         try {
             File myObj = new File(filename1);
             if (myObj.createNewFile()) {
@@ -266,7 +271,7 @@ public class Main {
         }
         try {
             FileWriter myWriter = new FileWriter(filename2);
-            System.out.println("======= The VC compiler =======");
+            myWriter.write("======= The VC compiler =======\n");
             for (Token token : List_Token)
                 if (List_TOKENACCEPTABLE.contains(token.getType())) {
                     String s = "Kind = " + token.getType() + ", "
@@ -281,16 +286,17 @@ public class Main {
             e.printStackTrace();
         }
     }
+    public static void mainActivity() {
+        for (String string:List_INPUT) {
+            analyseFile(string);
+            makeOutput(string);
+        }
+    }
     public static void main(String[] args)     throws IOException
     {
         initialized();
         String automatonFile = "AutomatonData.dat";
         getAutomatonData(automatonFile);
-        String inputFile = "Input/Example/example_gcd.vc";
-        //testAutomatonDataRead();
-        analyseFile(inputFile);
-        //testFileAnalyse();
-        String outputFile = "Output/" + "example_gcd";
-        makeOutput(outputFile);
+        mainActivity();
     }
 }
