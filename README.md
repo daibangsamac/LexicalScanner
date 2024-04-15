@@ -6,7 +6,7 @@ This program is designed for my compiler course.
 Contributing
 https://github.com/daibangsamac
 
-Flow: The program will first handle data from AutomatonData.dat. It contains all the tokens we need to parse down a VC program:
+Flow: The program will first handle data from AutomatonData.dat. It contains all the data we need to parse down a VC program into tokens:
 + CHARACTER: Formated as ASCII which is used in a VC program
 + DIGIT: As it name
 + KEYWORD: These things can't be used as identifier
