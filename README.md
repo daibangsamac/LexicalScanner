@@ -13,7 +13,9 @@ Flow: The program will first handle data from AutomatonData.dat. It contains all
 + STARTING_STATE: Typically, there's only 1
 + ENDING_STATE: All the ending state can be
 + TRANSITION TABLE: TABLE use for mapping 1 state to another
+
   Next, the program will parse down every single tokens into a string and put them into an ArrayList of String
+
   Finally, the program will write down all tokens to output files which are formated
 
 How to use the program:
