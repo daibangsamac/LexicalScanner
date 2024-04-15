@@ -22,4 +22,4 @@ How to use the program:
 + Copy input file (*.vc) to Input folder
 + Add filename (the * part) to List_INPUT inside initialized function in Main.java
 + Run the program
-+ 2 output file will be inside the Output folder
++ 2 output files for each input will be inside the Output folder
